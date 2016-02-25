@@ -8,9 +8,10 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(["/store/relval/CMSSW_7_6_2/RelValZMM_13/MINIAODSIM/PU25ns_76X_mcRun2_asymptotic_v12-v1/00000/C86BA73E-D09C-E511-AD68-002590596468.root"])
+#  fileNames = cms.untracked.vstring(["root://xrootd.unl.edu//store/relval/CMSSW_7_6_2/RelValTTbar_13/MINIAODSIM/PU25ns_76X_mcRun2_asymptotic_v12-v1/00000/DC900947-DC9C-E511-B3AC-0CC47A4C8F0A.root"])
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 from Configuration.AlCa.GlobalTag import GlobalTag
