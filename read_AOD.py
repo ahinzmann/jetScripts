@@ -14,12 +14,12 @@ ROOT.AutoLibraryLoader.enable()
 # load FWlite python libraries                                                                                                                                                                                                                                                 
 from DataFormats.FWLite import Handle, Events                                                                                                                                                                                                                                  
                                                                                                                                                                                                                                                                                
-jets, jetLabel = Handle("std::vector<pat::Jet>"), "slimmedJets"                                                                                                                                                                                                                
+jets, jetLabel = Handle("std::vector<reco::PFJet>"), "ak4PFJetsCHS"                                                                                                                                                                                                                
 pujetids, pujetidLabel = Handle("edm::ValueMap<StoredPileupJetIdentifier>"), "pileupJetId"                                                                                                                                                                                                                
 pujetidDiscriminant, pujetidDiscriminantLabel = Handle("edm::ValueMap<float>") , "pileupJetId:fullDiscriminant"                                                                                                                                                                                                                                                                                                                                          
                                                                                                                                                                                                                                                                                                                                                                                             
 # open file (you can use 'edmFileUtil -d /store/whatever.root' to get the physical file name)                                                                                                                                                                                                                                                                                               
-events = Events("file:patTuplePuIdFromMiniAOD.root")
+events = Events("file:patTuplePuIdFromAOD.root")
                                                                                                                                                                                                                                                                                                                                                                                             
 for iev,event in enumerate(events):                                                                                                                                                                                                                                                                                                                                                         
     if iev >= 10: break                                                                                                                                                                                                                                                                                                                                                                     
@@ -32,8 +32,8 @@ for iev,event in enumerate(events):
     # Jets (standard AK4)
     for i,j in enumerate(jets.product()):
         if j.pt() < 20: continue
-        print "jet %3d: pt %5.1f (raw pt %5.1f, matched-calojet pt %5.1f), eta %+4.2f" % (
-            i, j.pt(), j.pt()*j.jecFactor('Uncorrected'), j.userFloat("caloJetMap:pt"), j.eta() )
+        print "jet %3d: pt %5.1f, eta %+4.2f" % (
+            i, j.pt(), j.eta())
         string=""
 	string+="MVA=%.3f, " % (pujetidDiscriminant.product().get(i))
 	#variables=['RMS', 'beta', 'betaClassic', 'betaStar', 'betaStarClassic', 'dR2Mean', 'dRMatch', 'dRMean', 'dZ', 'frac01', 'frac02', 'frac03', 'frac04', 'frac05', 'frac06', 'frac07', 'jetEta', 'jetPt', 'jetR', 'jetRchg', 'majW', 'minW', 'nCharged', 'nNeutrals', 'nParticles', 'nTrueInt', 'nvtx', 'ptD', 'pull', 'rho']

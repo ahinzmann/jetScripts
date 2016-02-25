@@ -60,28 +60,16 @@ process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
 process.es_prefer_jec = cms.ESPrefer("PoolDBESSource",'jec')
 
 process.load("RecoJets.JetProducers.PileupJetID_cfi")
-process.pileupJetIdUpdated = process.pileupJetId.clone(
-  jets=cms.InputTag("slimmedJets"),
-  inputIsCorrected=True,
-  applyJec=True,
-  vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
-  )
+process.pileupJetId.jets=cms.InputTag("slimmedJets")
+process.pileupJetId.inputIsCorrected=True
+process.pileupJetId.applyJec=True
+process.pileupJetId.vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
 print process.pileupJetId.dumpConfig()
 
-process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-  src = cms.InputTag("slimmedJets"),
-  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
-process.updatedJets = process.patJetsUpdated.clone(
-  jetSource = cms.InputTag("slimmedJets"),
-  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-  )
-process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
-
-process.p = cms.Path( process.patJetCorrFactorsReapplyJEC + process.pileupJetIdUpdated + process. updatedJets )
+process.p = cms.Path(process.pileupJetId)
 
 process.out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string("patTupleUpdatedFromMiniAOD.root"),
+    fileName = cms.untracked.string("patTuplePuIdFromMiniAOD.root"),
     outputCommands = cms.untracked.vstring('keep *')
     )
 

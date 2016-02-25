@@ -7,7 +7,7 @@ process = cms.Process("PATUPDATE")
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
 process.source = cms.Source("PoolSource",
-  fileNames = cms.untracked.vstring(["/store/relval/CMSSW_7_6_2/RelValZMM_13/MINIAODSIM/PU25ns_76X_mcRun2_asymptotic_v12-v1/00000/C86BA73E-D09C-E511-AD68-002590596468.root"])
+  fileNames = cms.untracked.vstring(["/store/relval/CMSSW_7_6_2/RelValZMM_13/GEN-SIM-RECO/PU25ns_76X_mcRun2_asymptotic_v12-v1/00000/56F71722-CC9C-E511-9FCF-0CC47A4D7668.root"])
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
@@ -60,28 +60,16 @@ process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
 process.es_prefer_jec = cms.ESPrefer("PoolDBESSource",'jec')
 
 process.load("RecoJets.JetProducers.PileupJetID_cfi")
-process.pileupJetIdUpdated = process.pileupJetId.clone(
-  jets=cms.InputTag("slimmedJets"),
-  inputIsCorrected=True,
-  applyJec=True,
-  vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
-  )
+process.pileupJetId.jets=cms.InputTag("ak4PFJetsCHS")
+process.pileupJetId.inputIsCorrected=False
+process.pileupJetId.applyJec=True
+process.pileupJetId.vertexes=cms.InputTag("offlinePrimaryVertices")
 print process.pileupJetId.dumpConfig()
 
-process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-  src = cms.InputTag("slimmedJets"),
-  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
-process.updatedJets = process.patJetsUpdated.clone(
-  jetSource = cms.InputTag("slimmedJets"),
-  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-  )
-process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
-
-process.p = cms.Path( process.patJetCorrFactorsReapplyJEC + process.pileupJetIdUpdated + process. updatedJets )
+process.p = cms.Path(process.pileupJetId)
 
 process.out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string("patTupleUpdatedFromMiniAOD.root"),
+    fileName = cms.untracked.string("patTuplePuIdFromAOD.root"),
     outputCommands = cms.untracked.vstring('keep *')
     )
 
